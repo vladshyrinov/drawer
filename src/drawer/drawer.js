@@ -65,9 +65,7 @@ const Drawer = (function () {
       const childElement = publicInstance.render();
       const childInstance = instantiate(childElement);
       const dom = childInstance.dom;
-      if (publicInstance.componentDidMount) {
-        publicInstance.componentDidMount();
-      }
+      componentDidMount(publicInstance);
       
       Object.assign(instance, { dom, element, childInstance, publicInstance });
       return instance;
@@ -82,13 +80,13 @@ const Drawer = (function () {
       return newInstance;
     } else if (element == null) {
       // Remove instance
-      componentWillUnmount(instance, element);
+      componentWillUnmount(instance);
       parentDom.removeChild(instance.dom);
       return null;
     } else if (instance.element.type !== element.type) {
       // Replace instance
       const newInstance = instantiate(element);
-      componentWillUnmount(instance, element);
+      componentWillUnmount(instance);
       parentDom.replaceChild(newInstance.dom, instance.dom);
       return newInstance;
     } else if (typeof element.type === "string") {
@@ -110,7 +108,13 @@ const Drawer = (function () {
     }
   }
 
-  function componentWillUnmount(instance, element) {
+  function componentDidMount(publicInstance) {
+    if (publicInstance.componentDidMount) {
+      publicInstance.componentDidMount();
+    }
+  }
+
+  function componentWillUnmount(instance) {
     if (instance.publicInstance && instance.publicInstance.componentWillUnmount) {
       instance.publicInstance.componentWillUnmount();
     }
