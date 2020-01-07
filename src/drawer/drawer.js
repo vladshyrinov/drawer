@@ -63,12 +63,13 @@ const Drawer = (function () {
       const instance = {};
       const publicInstance = createPublicInstance(element, instance);
       const childElement = publicInstance.render();
-      console.log('render');
       const childInstance = instantiate(childElement);
       const dom = childInstance.dom;
-
+      if (publicInstance.componentDidMount) {
+        publicInstance.componentDidMount();
+      }
+      
       Object.assign(instance, { dom, element, childInstance, publicInstance });
-      console.log(instance);
       return instance;
     }
   }
@@ -81,11 +82,13 @@ const Drawer = (function () {
       return newInstance;
     } else if (element == null) {
       // Remove instance
+      componentWillUnmount(instance, element);
       parentDom.removeChild(instance.dom);
       return null;
     } else if (instance.element.type !== element.type) {
       // Replace instance
       const newInstance = instantiate(element);
+      componentWillUnmount(instance, element);
       parentDom.replaceChild(newInstance.dom, instance.dom);
       return newInstance;
     } else if (typeof element.type === "string") {
@@ -104,6 +107,12 @@ const Drawer = (function () {
       instance.childInstance = childInstance;
       instance.element = element;
       return instance;
+    }
+  }
+
+  function componentWillUnmount(instance, element) {
+    if (instance.publicInstance && instance.publicInstance.componentWillUnmount) {
+      instance.publicInstance.componentWillUnmount();
     }
   }
 
@@ -167,7 +176,6 @@ const Drawer = (function () {
     const { type, props } = element;
     const publicInstance = new type(props);
     publicInstance.__internalInstance = internalInstance;
-    console.log(publicInstance);
     return publicInstance;
   }
 

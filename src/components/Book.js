@@ -4,20 +4,29 @@ import Drawer from '../drawer/drawer';
 
 class Book extends Drawer.Component{
     constructor(props) {
+        console.log("constructor");
         super(props);
 
-        console.log('set state');
         this.state = {
             name: 'Hello World'
         }
     }
 
+    componentDidMount() {
+        console.log('componentDidMount');
+    }
+
     render(){
+        console.log("render");
         return(
             <div>
-                {/* <h1>{this.state.name}</h1> */}
+                <h1>{this.state.name}</h1>
             </div>
         )
+    }
+
+    componentWillUnmount() {
+        console.log("componentWillUnmount");
     }
 }
 
