@@ -60,19 +60,30 @@ const Drawer = (function () {
 
       return instance;
     } else {
+      const isClass = !!type.prototype.render;
+
       const instance = {};
-      const publicInstance = createPublicInstance(element, instance);
-      const childElement = publicInstance.render();
-      const childInstance = instantiate(childElement);
-      const dom = childInstance.dom;
-      componentDidMount(publicInstance);
-      
-      Object.assign(instance, { dom, element, childInstance, publicInstance });
+      if (isClass) {
+        const publicInstance = createPublicInstance(element, instance);
+        const childElement = publicInstance.render();
+
+        const childInstance = instantiate(childElement);
+        const dom = childInstance.dom;
+        componentDidMount(publicInstance);
+        
+        Object.assign(instance, { dom, element, childInstance, publicInstance });
+      } else {
+        const childElement = type(props);
+        const childInstance = instantiate(childElement);
+        const dom = childInstance.dom;
+        Object.assign(instance, { dom, element, childInstance });
+      }
+
       return instance;
     }
   }
 
-  function reconcile(parentDom, instance, element) {
+  function reconcile(parentDom, instance, element, prevState) {
     if (instance == null) {
       // Create instance
       const newInstance = instantiate(element);
@@ -97,8 +108,14 @@ const Drawer = (function () {
       return instance;
     } else {
       //Update composite instance
+      const prevProps = {...instance.publicInstance.props};
+      if (!prevState) {
+        prevState = {...instance.publicInstance.state};
+      }
+
       instance.publicInstance.props = element.props;
       const childElement = instance.publicInstance.render();
+      componentDidUpdate(instance.publicInstance, prevProps, prevState);
       const oldChildInstance = instance.childInstance;
       const childInstance = reconcile(parentDom, oldChildInstance, childElement);
       instance.dom = childInstance.dom;
@@ -117,6 +134,12 @@ const Drawer = (function () {
   function componentWillUnmount(instance) {
     if (instance.publicInstance && instance.publicInstance.componentWillUnmount) {
       instance.publicInstance.componentWillUnmount();
+    }
+  }
+
+  function componentDidUpdate(publicInstance, prevProps, prevState) {
+    if (publicInstance.componentDidUpdate) {
+      publicInstance.componentDidUpdate(prevProps, prevState);
     }
   }
 
@@ -167,13 +190,13 @@ const Drawer = (function () {
     }
 
     setState(partialState) {
+      const prevState = {...this.state};
       this.state = {
         ...this.state,
         ...partialState
       }
-      updateInstance(this.__internalInstance);
+      updateInstance(this.__internalInstance, prevState);
     }
-
   }
 
   function createPublicInstance(element, internalInstance) {
@@ -183,10 +206,10 @@ const Drawer = (function () {
     return publicInstance;
   }
 
-  function updateInstance(internalInstance) {
+  function updateInstance(internalInstance, prevState) {
     const parentDom = internalInstance.dom.parentNode;
     const element = internalInstance.element;
-    reconcile(parentDom, internalInstance, element);
+    reconcile(parentDom, internalInstance, element, prevState);
   }
 
   return {
