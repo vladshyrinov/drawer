@@ -172,6 +172,8 @@ const Drawer = (function () {
     const dom = instance.dom;
     const childInstances = instance.childInstances;
     const nextChildElements = element.props.children || [];
+    // console.log("childInstances: ", instance.childInstances);
+    // console.log("nextChildElements: ", element.props.children);
     const newChildInstances = [];
     const count = Math.max(childInstances.length, nextChildElements.length);
     for (let i = 0; i < count; i++) {
@@ -189,13 +191,23 @@ const Drawer = (function () {
         this.state = this.state || {}
     }
 
-    setState(partialState) {
+    setState(updater, callbackFn) {
       const prevState = {...this.state};
+      const props = {...this.props}
+      
+      if (typeof updater === "function") {
+        updater = updater(prevState, props)
+      }
+      
       this.state = {
         ...this.state,
-        ...partialState
+        ...updater
       }
+
       updateInstance(this.__internalInstance, prevState);
+      if (typeof callbackFn === "function") {
+        callbackFn();
+      }
     }
   }
 
