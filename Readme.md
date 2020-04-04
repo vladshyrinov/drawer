@@ -12,17 +12,17 @@ To better undestand principles, that lie inside the React library
 
 transforms HTML or React element like 
 
-'''html
+```html
     <div id="container">
         <input value="foo" type="text"> 
         <a href="/bar">Bar</a>
         <span>      
     </div> 
-'''
+```
 
 into JS Object
 
-'''js
+```js
     const element = {
     type: "div",
     props: {
@@ -37,15 +37,15 @@ into JS Object
         ]
     }
 };
-'''
+```
 
 #### Drawer.render
 
 renders JS Object into parent DOM
 
-'''js
+```js
     render(element, document.getElementById("root"));
-'''
+```
 
 #### Drawer.Component
 
@@ -62,7 +62,7 @@ is a base class to create React class components
 
 ## Usage
 
-see example [here](example-app)
+see [example-app](example-app)
 
 
 
