@@ -1,6 +1,6 @@
 # Drawer 
 
-It is an implementation of React library (version before 16.8) created based on tutorial by Rodrigo Pombo plus added own features
+It is an implementation of React library (version before 16.8) based on tutorial by Rodrigo Pombo plus added own features
 
 ## Motivation
 
