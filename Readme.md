@@ -23,7 +23,7 @@ transforms HTML or React element like
 into JS Object
 
 ```js
-    const element = {
+const element = {
     type: "div",
     props: {
         id: "container",
@@ -44,7 +44,7 @@ into JS Object
 renders JS Object into parent DOM
 
 ```js
-    render(element, document.getElementById("root"));
+render(element, document.getElementById("root"));
 ```
 
 #### Drawer.Component
@@ -56,9 +56,9 @@ is a base class to create React class components
 - Class component
 - Functional component
 - Lifecycle hooks:
--- componentDidMount
--- componentDidUpdate
--- componentWillUnmount
+    - componentDidMount
+    - componentDidUpdate
+    - componentWillUnmount
 
 ## Usage
 
