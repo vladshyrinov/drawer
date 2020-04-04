@@ -6,7 +6,7 @@ const path = require('path');
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 module.exports = {
-    entry: ['./src/index.js'],
+    entry: ['./example-app/index.js'],
     output: {
         filename: isDevelopment ? '[name].js' : '[name].[hash].js',
         path: path.resolve(__dirname, 'dist')
